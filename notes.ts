@@ -42,8 +42,6 @@ let test3 = "String"; // Por defecto sera de tipo any
 
 
 "COMPOSICIONES DE TIPOS"
-
-
 // Unions
 const variable: string | number = 3; // Este variable puede ser de dos o mas tipos 
 
@@ -94,3 +92,96 @@ function printPosition(position: {lat: number, long?: number}): void {
     console.log(position.lat, position.long);
 } // Tambien podemos asignarle que el parametro debe recibir un objeto con ciertas propiedades con determinados tipos de valores, los cuales tambien podemos hacer opcionales.
 // Si a una funcion no se le asigna tipo y encima no retorna nada, por defecto es de tipo "void"
+
+
+
+"INTERFACE VS CLASS"
+
+//INTEFACE: Solo existe en tiempo de compilacion y solo se usan para la verificacion de tipos, basicamente una herramiento de desarrllo
+//CLASS: Funciona normalmente como en JavaScript
+
+
+"-----Inteface------"
+
+interface Book {
+    id: number;
+    title: string;
+    author: string;
+    coAuthor?: string;
+    isLoan?: (id: number) => void
+} // Basicamente al crear una interface, creamos un tipo de variable que debe contener un objeto con esas propiedades  y valores, algunas opcionales.
+
+const book: Book = {
+    id: 1,
+    title: 'The truth tables',
+    author: 'Victor Lopez'
+};
+
+const books: Book[] = [{id: 2, title: 'The life', author: 'Alonso'} ]; // Este sera un array que solo tendra elementos con interfaces de book
+
+const getBook = (): Book => {
+    return { id: 2, title: 'The life', author: 'Alonso'}
+}
+
+const myBook = getBook();
+
+const createBook = ( book: Book ) : Book => {
+    return book;
+}
+
+const myCreatedBook = createBook( {id: 2, title: 'The life', author: 'Alonso'});
+
+//Heredar
+interface Person {
+    id: number;
+    name: string;
+}
+
+interface Employee extends Person {
+    dept: string;
+} // Le agregamos a esta interface las propiedades de la otra interface
+
+//Implements
+interface Animal {
+    name: string;
+    getDogs: () => void;
+    getCats?: () => void;
+}
+
+class Zoo implements Animal { 
+    name = 'Joselito';
+    getDogs() {
+
+    }
+} // Lo que hara implements es solicitar las propiedades y metodos de una interface, sino dara error
+
+"-----Class-----"
+
+class Animal {
+    public color = 'green'; // En cualquier clase (si es heredada tambien) y se puede acceder a su valor
+    private country = 'Russia'; // Solo en el scope de esta clase y no se puede acceder a su valor
+    protected extintionDanger = true; // Solo en el scope de otro clase a la que se le hereda y no se puede acceder a su valor
+
+}
+
+class Zoo extends Animal { 
+
+    // Las propiedades que vamos a utlizar en esta clase (constructor), deben estar declaradas afuera del constructor con su respectivo tipo, si no no funcionara
+    // name: string; // Aqui declaramos las propiedades (variables) y en el constructor les damos su valor, ya que a fuerza necesitan un valor de su respectivo tipo debido a la interface (si es que utilizamos una) y si no tambien se deben declarar afuera del constructor de esta manera
+    // type: string; // Estas por defeecto tienen public
+    // public age: number;
+
+    constructor(public readonly name: string, private type: string, private age: number) { // Al asignarle un public (puede ser cualquier otro), por defecto ya estamos declarando esos atributos y por lo tanto se implementan automaticamente las proopiedades de la interface (si es que la usamos) sin tener que ser declardas fuera del constructor. Si les ponemos private, el implements no funcionara. Al ponerle un acceso, tampoco es necesario que pongamos this.name = name; porque pro defecto el acceso ya lo hace
+        super(); // Recuerda que este se agrega cuando se uso de extends
+        //this.name = name; // Esto se quita pq al ponerle un modificador de acceso a los parametros, esto ya se hace en automatico, si no tuvieramos modificadores de acceso entonces si se tendria que hacer esto y lo que hicmos arriba del constructor
+        this.getDogs();
+        // lo que hace readonly es que su valor no podra ser cambiado fuera de la clase o despues de crear una instancia, por ejemplo no podremos hacer un animal.name = "Juanito" porque dara error
+    }
+
+    getDogs() { 
+        console.log(this.name, this.age, this.color, this.extintionDanger ); 
+        // No podemos llamar a this.country debido a que es heredado y es privado, por lo tanto solo puede ser llamado en su scope, es decir en su clase. Basicamente se podria decir que esa propiedad no se hereda
+    }
+} // Lo que hara implements es solicitar las propiedades y metodos de una interface, sino dara error
+
+const animal = new Zoo("Joselito", "Bulldog", 8);
