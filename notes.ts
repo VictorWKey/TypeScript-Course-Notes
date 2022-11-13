@@ -155,6 +155,8 @@ class Zoo implements Animal {
     }
 } // Lo que hara implements es solicitar las propiedades y metodos de una interface, sino dara error
 
+
+
 "-----Class-----"
 
 class Animal {
@@ -185,3 +187,72 @@ class Zoo extends Animal {
 } // Lo que hara implements es solicitar las propiedades y metodos de una interface, sino dara error
 
 const animal = new Zoo("Joselito", "Bulldog", 8);
+
+
+"NAMESPACES"
+
+// Actualmente ya casi ni se usan pero es importante saber que existen
+
+let config = {
+    "module": "system", 
+    "outFile": "./dist/output.js", // Este archivo sera el responsable de ejecutar el index.js cuando se hace uso de namespaces
+    "outDir": "./dist"
+}
+// Y con esto para ejecutar la aplicacion (El index), tendriamos que llamar a node dist/output.js
+
+// utility.ts
+namespace Utility {
+    export namespace Taxes {
+        export function calculateIva(price: number): number {
+            return (price * 0.21) + price;
+        }
+    }
+}
+
+//index.ts
+/// <reference path= "utility.ts" />
+
+let utils = Utility.Taxes;
+console.log(utils.calculateIva(100));
+
+
+"MODULES"
+
+//modules.ts
+export const PI = (): number => {
+    return 3.1416;
+};
+
+interface Person {
+    id: number,
+    name: string
+}
+
+export { Person };
+
+//index.ts
+let config = {
+    "moduleResolution": "node"
+}
+
+import { PI as myPI, Person } from "./modules"; // Con as renombramos lo que importamos
+
+console.log(myPI());
+
+const user: Person = {
+    id: 4,
+    name: "Juan"
+}
+
+console.log(user);
+
+// import * as data from "./modules"; 
+
+// console.log(data.PI());
+
+// const user2: data.Person = {
+//     id: 4,
+//     name: "Juan"
+// }
+
+// console.log(user2);
